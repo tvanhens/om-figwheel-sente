@@ -4,8 +4,8 @@
   (:require
    [figwheel.client :as fw]
    [cljs.core.async :as async :refer (<!! <! >! put! chan)]
-   [taoensso.sente :as sente :refer (cb-success?)])
-  )
+   [taoensso.sente :as sente :refer (cb-success?)]
+   [reagent.core :as reagent :refer [atom]]))
 
 (enable-console-print!)
 
