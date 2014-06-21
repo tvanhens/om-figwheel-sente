@@ -41,7 +41,7 @@
 (defn unmount-it []
   (reagent/unmount-component-at-node (.-body js/document)))
 
-;
+(mount-it)
 
 (fw/watch-and-reload
  :websocket-url "ws://localhost:3449/figwheel-ws"
