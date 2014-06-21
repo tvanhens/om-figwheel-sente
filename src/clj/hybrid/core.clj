@@ -4,7 +4,8 @@
             [compojure.core :refer (defroutes GET POST DELETE ANY context)]
             [compojure.route :as route]
             [org.httpkit.server :refer :all]
-            [taoensso.sente :as sente]))
+            [taoensso.sente :as sente]
+            [clojure.core.async :refer (<!! go-loop)]))
 
 (let [{:keys [ch-recv send-fn ajax-post-fn ajax-get-or-ws-handshake-fn
               connected-uids]}
