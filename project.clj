@@ -12,7 +12,8 @@
                  [com.taoensso/sente "0.14.1"]
                  [compojure "1.1.8"]
                  [ring "1.3.0"]
-                 [http-kit "2.1.16"]]
+                 [http-kit "2.1.16"]
+                 ]
 
   :source-paths ["src/clj"]
 
