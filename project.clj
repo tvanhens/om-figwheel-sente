@@ -18,7 +18,7 @@
                  [com.stuartsierra/component "0.2.1"]
                  ]
 
-  :source-paths ["src/clj"]
+  :source-paths ["src/clj" "dev"]
 
   :plugins [[lein-cljsbuild "1.0.3"]
             [lein-figwheel "0.1.3-SNAPSHOT"]
