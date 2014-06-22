@@ -9,10 +9,13 @@
 
 (enable-console-print!)
 
+(defonce sente-socket
+  (sente/make-channel-socket! "/chsk" ; Note the same path as before
+                              {:type :auto ; e/o #{:auto :ajax :ws}
+                               }))
+
 (let [{:keys [chsk ch-recv send-fn state]}
-      (sente/make-channel-socket! "/chsk" ; Note the same path as before
-                                  {:type :auto ; e/o #{:auto :ajax :ws}
-                                   })]
+      sente-socket]
   (defonce chsk       chsk)
   (defonce ch-chsk    ch-recv) ; ChannelSocket's receive channel
   (defonce chsk-send! send-fn) ; ChannelSocket's send API fn
@@ -48,5 +51,4 @@
  :jsload-callback (fn []
                     (reset! click-count 0)
                     (unmount-it)
-                    (mount-it)
-                    ))
+                    (mount-it)))
