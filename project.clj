@@ -15,6 +15,7 @@
                  [ring "1.3.0"]
                  [http-kit "2.1.16"]
                  [reagent "0.4.2"]
+                 [com.stuartsierra/component "0.2.1"]
                  ]
 
   :source-paths ["src/clj"]

@@ -5,7 +5,8 @@
             [compojure.route :as route]
             [org.httpkit.server :refer :all]
             [taoensso.sente :as sente]
-            [clojure.core.async :refer (<!! go-loop)]))
+            [clojure.core.async :refer (<!! go-loop)]
+            [com.stuartsierra.component :as component]))
 
 (let [{:keys [ch-recv send-fn ajax-post-fn ajax-get-or-ws-handshake-fn
               connected-uids]}
@@ -36,4 +37,29 @@
   (POST "/chsk" req (ring-ajax-post                req))
   (route/resources "/"))
 
-(run-server (site #'my-app) {:port 3000})
+(defrecord WebServer []
+  component/Lifecycle
+
+  (start [component]
+    (if-not (= (:status component) :running)
+      (do
+        (println ";; Starting webserver")
+        (let [server (run-server (site #'my-app) {:port 3000})]
+          (assoc component :server server :status :running)))
+      (do
+        (println ";; Server already started")
+        component)))
+  (stop [component]
+    (println ";; Stoping webserver")
+    ((:server component))
+    (dissoc (assoc component :status :stopped)
+            :server)))
+
+(defn web-server []
+  (map->WebServer {}))
+
+(defonce system (web-server))
+
+(alter-var-root #'system component/start)
+
+(alter-var-root #'system component/stop)
