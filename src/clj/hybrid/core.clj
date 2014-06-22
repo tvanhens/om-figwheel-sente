@@ -8,9 +8,11 @@
             [clojure.core.async :refer (<!! go-loop)]
             [com.stuartsierra.component :as component]))
 
+(defonce sente-socket (sente/make-channel-socket! {}))
+
 (let [{:keys [ch-recv send-fn ajax-post-fn ajax-get-or-ws-handshake-fn
               connected-uids]}
-      (sente/make-channel-socket! {})]
+      sente-socket]
   (defonce ring-ajax-post                ajax-post-fn)
   (defonce ring-ajax-get-or-ws-handshake ajax-get-or-ws-handshake-fn)
   (defonce ch-chsk                       ch-recv) ; ChannelSocket's receive channel
@@ -23,7 +25,6 @@
   (let [session (:session ring-req)
         uid     (:uid session)
         [id data :as ev] event]
-
     (println "Event: %s" ev)))
 
 (defonce chsk-router
@@ -31,7 +32,6 @@
 
 (defroutes my-app
   ;; <other stuff>
-
     ;;; Add these 2 entries: --->
   (GET  "/chsk" req (ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req (ring-ajax-post                req))
@@ -39,7 +39,6 @@
 
 (defrecord WebServer []
   component/Lifecycle
-
   (start [component]
     (if-not (= (:status component) :running)
       (do
@@ -50,10 +49,15 @@
         (println ";; Server already started")
         component)))
   (stop [component]
-    (println ";; Stoping webserver")
-    ((:server component))
-    (dissoc (assoc component :status :stopped)
-            :server)))
+    (if-not (= (:status component) :stopped)
+      (do
+        (println ";; Stoping webserver")
+        ((:server component))
+        (dissoc (assoc component :status :stopped)
+                :server))
+      (do
+        (println ";; Server already stopped")
+        component))))
 
 (defn web-server []
   (map->WebServer {}))
