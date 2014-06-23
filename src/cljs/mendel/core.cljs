@@ -9,8 +9,10 @@
 
 (enable-console-print!)
 
+;; This gets jsPlumb ready
 (.ready js/jsPlumb #())
 
+;; Binding to a dom element
 (.setContainer js/jsPlumb (.getElementById js/document "main-area"))
 
 
@@ -30,17 +32,27 @@
 ;; define your app data so that it doesn't get over-written on reload
 ;; (defonce app-data (atom {}))
 
-(defonce click-count (atom 0))
+(defonce universe (atom {:counter 0
+                         :nodes []}))
+(defn create-node
+  []
+  (let [state      @universe
+        node-count (:counter state)]
+    (swap! universe #(assoc state
+                       :counter (inc (:counter state))
+                       :nodes (conj (:nodes state)
+                                    {:id (str "hello-" node-count)}))))
+  )
 
-(defn inc-and-notify []
-  (swap! click-count inc)
-  (chsk-send! [:dom.event/click {:times @click-count
-                                 :hello "world"}]))
+(defn plumb-it-up []
+  (.draggable js/jsPlumb "hello-0"))
 
 (defn state-ful-with-atom []
-  [:div {:on-click #(inc-and-notify) :id "main-area"}
-   [:div {:id "draggable" :style {:position "absolute" :height "50px" :width "50px" :top "200px" :left "200px" :background-color "#66CCFF"}}]])
-
+  [:div {:id "main-area"}
+   [:div {:id "add-node" :on-click #(create-node) :style {:position "absolute" :height "50px" :width "200px" :top "50px" :left "50px" :background-color "gray"}}
+    "Add Node"]
+   (for [node (:nodes @universe)]
+     [:div {:id (:id node) :on-mouse-up #(chsk-send! [:hello.blah/world {:hello "world"}]) :style {:position "absolute" :height "50px" :width "50px" :top "200px" :left "200px" :background-color "#66CCFF"}}])])
 
 (defn mount-it []
   (reagent/render-component [state-ful-with-atom]
@@ -51,7 +63,8 @@
 
 (mount-it)
 
-(.draggable js/jsPlumb "draggable")
+;; Make a div draggable with the id draggable
+;; (.draggable js/jsPlumb "draggable2")
 
 (fw/watch-and-reload
  :websocket-url "ws://localhost:3449/figwheel-ws"
