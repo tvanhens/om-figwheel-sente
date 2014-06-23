@@ -9,6 +9,11 @@
 
 (enable-console-print!)
 
+(.ready js/jsPlumb #())
+
+(.setContainer js/jsPlumb (.getElementById js/document "main-area"))
+
+
 (defonce sente-socket
   (sente/make-channel-socket! "/chsk" ; Note the same path as before
                               {:type :auto ; e/o #{:auto :ajax :ws}
@@ -33,8 +38,8 @@
                                  :hello "world"}]))
 
 (defn state-ful-with-atom []
-  [:div {:on-click #(inc-and-notify)}
-      "I have been clicked " @click-count " times."])
+  [:div {:on-click #(inc-and-notify) :id "main-area"}
+   [:div {:id "draggable" :style {:position "absolute" :height "50px" :width "50px" :top "200px" :left "200px" :background-color "#66CCFF"}}]])
 
 
 (defn mount-it []
@@ -45,6 +50,8 @@
   (reagent/unmount-component-at-node (.-body js/document)))
 
 (mount-it)
+
+(.draggable js/jsPlumb "draggable")
 
 (fw/watch-and-reload
  :websocket-url "ws://localhost:3449/figwheel-ws"

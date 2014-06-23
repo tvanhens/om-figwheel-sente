@@ -26,9 +26,10 @@
 
   :cljsbuild {
               :builds [{ :source-paths ["src/cljs"]
-                         :compiler { :output-to "resources/public/js/compiled/mendel.js"
-                                     :output-dir "resources/public/js/compiled/out"
-                                    :optimizations :none }}]
+                        :compiler {:externs ["resources/public/lib/dom.jsPlumb-1.6.2-min.js"]
+                                   :output-to "resources/public/js/compiled/mendel.js"
+                                   :output-dir "resources/public/js/compiled/out"
+                                   :optimizations :none }}]
               }
 
   :figwheel {
