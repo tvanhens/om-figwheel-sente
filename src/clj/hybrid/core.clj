@@ -61,9 +61,3 @@
 
 (defn web-server []
   (map->WebServer {}))
-
-(defonce system (web-server))
-
-(alter-var-root #'system component/start)
-
-(alter-var-root #'system component/stop)
